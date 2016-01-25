@@ -5,6 +5,12 @@
 #include <math.h>
 #include <stdlib.h>
 
+int refactoredSmithy (struct gameState *state, int handPos);
+int refactoredGreatHall (struct gameState *state, int handPos);
+int refactoredEmbargo(struct gameState *state, int hadPos, int choice1);
+int refactoredMine(struct gameState *state, int choice1, int choice2, int handPos);
+int refactoredOutpost(struct gameState *state, int handPos, int choice1, int choice2);
+
 int compare(const void* a, const void* b) {
   if (*(int*)a > *(int*)b)
     return 1;
@@ -768,39 +774,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return -1;
 			
     case mine:
-      j = state->hand[currentPlayer][choice1];  //store card we will trash
-
-      if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
-	{
-	  return -1;
-	}
-		
-      if (choice2 > treasure_map || choice2 < curse)
-	{
-	  return -1;
-	}
-
-      if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
-	{
-	  return -1;
-	}
-
-      gainCard(choice2, state, 2, currentPlayer);
-
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-
-      //discard trashed card
-      for (i = 0; i < state->handCount[currentPlayer]; i++)
-	{
-	  if (state->hand[currentPlayer][i] == j)
-	    {
-	      discardCard(i, currentPlayer, state, 0);			
-	      break;
-	    }
-	}
-			
-      return 0;
+     return refactoredMine(state, hanfPos, choice1, choice2);
 			
     case remodel:
       j = state->hand[currentPlayer][choice1];  //store card we will trash
@@ -829,26 +803,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
-      //+3 Cards
-      for (i = 0; i < 3; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-      return 0;
-		
-    case village:
-      //+1 Card
-      drawCard(currentPlayer, state);
-			
-      //+2 Actions
-      state->numActions = state->numActions + 2;
-			
-      //discard played card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-      return 0;
+      return refactoredSmithy(state, handPos);
 		
     case baron:
       state->numBuys++;//Increase buys by 1!
@@ -902,18 +857,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case great_hall:
-      //+1 Card
-      drawCard(currentPlayer, state);
-			
-      //+1 Actions
-      state->numActions++;
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-      return 0;
+      return refactoredGreatHall(state, HandPos);
 		
     case minion:
-      //+1 action
+    //+1 action
       state->numActions++;
 			
       //discard card from hand
@@ -1139,29 +1086,10 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 		
     case embargo: 
-      //+2 Coins
-      state->coins = state->coins + 2;
-			
-      //see if selected pile is in play
-      if ( state->supplyCount[choice1] == -1 )
-	{
-	  return -1;
-	}
-			
-      //add embargo token to selected supply pile
-      state->embargoTokens[choice1]++;
-			
-      //trash card
-      discardCard(handPos, currentPlayer, state, 1);		
-      return 0;
+      return refactoredEmbargo(state, handPos, choice1);
 		
     case outpost:
-      //set outpost flag
-      state->outpostPlayed++;
-			
-      //discard card
-      discardCard(handPos, currentPlayer, state, 0);
-      return 0;
+		return refactoredOutpost(state, HandPos);
 		
     case salvager:
       //+1 buy
@@ -1222,6 +1150,99 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	
   return -1;
 }
+
+int refactoredSmithy (struct gameState *state, int handPos) {
+	int currentPlayer = whoseTurn(state);
+	//+3 Cards
+	for (i = 0; i < 3; i++)	{
+	drawCard(currentPlayer, state);
+	}
+	//discard card from hand
+	discardCard(handPos, currentPlayer, state, 0);
+	return 0;
+	}
+}
+
+int refactoredGreatHall (struct gameState *state, int handPos)	{
+//+1 Card
+      drawCard(currentPlayer, state);
+			
+      //+1 Actions
+      state->numActions++;
+			
+      //discard card from hand
+      discardCard(handPos, currentPlayer, state, 0);
+      return 0;
+
+}
+
+int refactoredEmbargo(struct gameState *state, int hadPos, int choice1)	{
+	int currentPlayer = whoseTurn(state);
+ 	     //+2 Coins
+       state->coins = state->coins + 2;
+ 			
+       //see if selected pile is in play
+       if ( state->supplyCount[choice1] == 1 )
+ 	{
+ 	  return -1;
+ 	}
+ 			
+       //add embargo token to selected supply pile
+       state->embargoTokens[choice1]++;
+ 			
+       //trash card
+       discardCard(handPos, currentPlayer, state, 1);
+ 	  return 0;
+}
+
+int refactoredOutpost(struct gameState *state, int handPos, int choice1, int choice2)	{
+	int currentPlayer = whoseTurn(state);
+ 	//set outpost flag
+ 	state->outpostPlayed++;
+ 	//discard card
+ 	discardCard(handPos, currentPlayer, state, 0);
+ 	return 0;
+}
+
+int refactoredMine(struct gameState *state, int choice1, int choice2, int handPos) {
+   int currentPlayer = whoseTurn(state);
+   int i;
+   int j;
+ 
+   j = state->hand[currentPlayer][choice1];  //store card we will trash
+ 
+   if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
+   {
+     return -1;
+   }
+ 
+   if (choice2 > treasure_map || choice2 < curse)
+   {
+     return -1;
+   }
+ 
+   if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
+   {
+     return -1;
+   }
+ 
+   gainCard(choice2, state, 2, currentPlayer);
+ 
+   //discard card from hand
+   discardCard(handPos, currentPlayer, state, 0);
+ 
+   //discard trashed card
+   for (i = 0; j < state->handCount[currentPlayer]; i++)
+   {
+     if (state->hand[currentPlayer][i] == j)
+     {
+       discardCard(i, currentPlayer, state, 0);
+       drawCard(currentPlayer, state);
+       break;
+     }
+   }
+   return 0;
+ }
 
 int discardCard(int handPos, int currentPlayer, struct gameState *state, int trashFlag)
 {
@@ -1328,6 +1349,4 @@ int updateCoins(int player, struct gameState *state, int bonus)
   return 0;
 }
 
-
 //end of dominion.c
-

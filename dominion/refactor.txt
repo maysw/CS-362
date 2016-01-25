@@ -1,0 +1,12 @@
+cards that were refactored:
+
+1) Smithy
+	refactoredSmithy (struct gameState *state, int handPos);
+2) Great Hall
+	refactoredGreatHall (struct gameState *state, int handPos);
+3) Embargo
+	refactoredEmbargo(struct gameState *state, int hadPos, int choice1);
+4) Mine
+	refactoredMine(struct gameState *state, int choice1, int choice2, int handPos);
+5)Outpost
+	refactoredOutpost(struct gameState *state, int handPos, int choice1, int choice2);
