@@ -1,0 +1,38 @@
+Unit Tests
+	1) Update Coins
+		No bugs found
+		Lines executed:0.88% of 565
+
+	2) Buy Card
+		No bugs found
+		Lines executed:2.48% of 565
+
+	3) Is Game Over
+		No bugs found
+		Lines executed:18.76% of 565
+
+	4) Whose Turn
+		No bugs found
+		Lines executed:19.12% of 565
+
+Card Tests
+	1) Embargo
+		No bugs found
+		Lines executed:23.19% of 565
+
+	2) Great Hall
+		No bugs found
+		Lines executed:27.08% of 565
+
+	3) Outpost
+		No bugs found
+		Lines executed:27.61% of 565
+
+	4) Gardens
+		No bugs found
+		Lines executed:29.73% of 565
+		
+Overall coverage after running myTest
+	File 'dominion.c'
+	Lines executed:29.73% of 565
+	dominion.c:creating 'dominion.c.gcov'
