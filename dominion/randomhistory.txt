@@ -1,0 +1,17 @@
+Assignment 3
+William Mays
+
+1)	Random Test Card:
+		- I decided to test the village card and got a code coverage of 24% 
+		- Added errors variable to keep track of the errors
+		- I ran 10000 tests and my tests were able to find 20 errors
+		- Properly initialized with deckCount, discardCount, handCount and numActions
+		
+	
+2)	Random Test Adventurer
+		- I made some changes to the adventurer tester and got a code coverage of 23.45%
+		- Ther are minor flaws in the debugging. Most of the time it will find errors, 
+		but every once in a while it will not return an error. Clean it then compile again. 
+		That should make it work
+		- Treasure cards are added to the player's hand once played.
+		- Plays adventurer card
